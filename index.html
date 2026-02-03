@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLI by chase</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #FFF;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            line-height: 1.4;
+            height: 100vh;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+        }
+
+        .alienware-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-shadow: 1px 1px 0 #4f80ff, 2px 2px 0 #4f80ff, 3px 3px 0 #4f80ff, -1px -1px 0 #ff69b4, -2px -2px 0 #ff69b4, -3px -3px 0 #ff69b4;
+            display: inline-block;
+            margin: 0;
+        }
+
+        .prompt-text {
+            color: #AAA;
+            margin: 5px 0;
+        }
+
+        #output-history {
+            margin-bottom: 10px;
+            overflow-y: auto;
+            max-height: calc(100vh - 250px);
+        }
+
+        .user-input-line {
+            color: #00ff00;
+        }
+
+        .error-line {
+            color: #ff4444;
+        }
+
+        .input-area {
+            display: flex;
+            align-items: center;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+
+        .cli-prompt-symbol {
+            color: #00ff00;
+            margin-right: 5px;
+            font-size: 1rem;
+        }
+
+        .cli-input {
+            background-color: #1a1a1a;
+            color: #FFF;
+            border: 1px solid #FFF;
+            padding: 10px;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* Browser Window Styles */
+        #window-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: #1a1a1a;
+            border: 2px solid #4f80ff;
+            box-shadow: 0 0 20px rgba(79, 128, 255, 0.5);
+            z-index: 1000;
+            flex-direction: column;
+        }
+
+        #window-header {
+            background: #4f80ff;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            color: white;
+            font-weight: bold;
+        }
+
+        #close-btn {
+            background: #ff4444;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 2px 10px;
+            font-weight: bold;
+        }
+
+        #browser-iframe {
+            flex-grow: 1;
+            border: none;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="logo-container">
+        <div style="color: #4f80ff; font-size: 4rem; display: inline-block; vertical-align: top; margin-right: 10px;">
+            &gt;</div>
+        <h1 class="alienware-logo">CLI</h1>
+    </div>
+
+    <p class="prompt-text">Type 'help' to get started. Use '/browser' to open the OS.</p>
+    <p class="prompt-text">DO NOT EXPLOITE</p>
+    <p class="prompt-text">Made by Chase!</p>
+
+    <div id="output-history"></div>
+
+    <div class="input-area">
+        <span class="cli-prompt-symbol">&gt;</span>
+        <input type="text" class="cli-input" id="command-input" autofocus placeholder="Awaiting command...">
+    </div> <!-- Realistic Window -->
+    <div id="window-container">
+        <div id="window-header">
+            <span>Flash Quick OS - Browser</span>
+            <button id="close-btn" onclick="closeBrowser()">X</button>
+        </div>
+        <iframe id="browser-iframe" src=""></iframe>
+    </div>
+
+    <script>
+        const inputField = document.getElementById('command-input');
+        const outputHistory = document.getElementById('output-history');
+        const windowContainer = document.getElementById('window-container');
+        const browserIframe = document.getElementById('browser-iframe');
+
+        inputField.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                const command = inputField.value.trim();
+                if (command) {
+                    processCommand(command);
+                    inputField.value = '';
+                }
+            }
+        });
+
+        function openBrowser() {
+            browserIframe.src = "https://flash-quick-os.base44.app/";
+            windowContainer.style.display = 'flex';
+            appendOutput("Opening browser window...", "user-input-line");
+        }
+
+        function closeBrowser() {
+            windowContainer.style.display = 'none';
+            browserIframe.src = "";
+            appendOutput("Browser window closed.", "prompt-text");
+        }
+
+        function processCommand(command) {
+            if (command.toLowerCase() !== '/log') {
+                appendOutput(`> ${command}`, 'user-input-line');
+            }
+
+            switch (command.toLowerCase()) {
+                case '/browser':
+                    openBrowser();
+                    break;
+                case '/log':
+                    outputHistory.innerHTML = '';
+                    break; case '/gauth':
+                    window.open('https://gauthmath.com', '_blank'); break;
+                case '/google':
+                    window.open('https://google.com', '_blank');
+                    break;
+                case '/panic':
+                    appendOutput('ViVsOS <urb:::...>', 'error-line');
+                    setTimeout(() => { window.close(); }, 1500);
+                    break; case 'help':
+                    appendOutput('Available: /browser, /log, /gauth, /google, /panic', 'prompt-text');
+                    break;
+                case '/adminptl0403':
+                    window.open('https://sys-override-now.base44.app', '_blank');
+                    break;
+                default:
+                    appendOutput(`Unknown Command<<${command}>>`, 'error-line');
+                    break;
+            }
+
+            outputHistory.scrollTop = outputHistory.scrollHeight;
+        }
+
+        function appendOutput(message, className) {
+            const newLine = document.createElement('p');
+            newLine.textContent = message;
+            newLine.classList.add(className);
+            outputHistory.appendChild(newLine);
+        }
+    </script>
+</body>
+
+</html>```
